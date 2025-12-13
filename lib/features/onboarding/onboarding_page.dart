@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/theme/app_colors.dart';
-import '../home/home_page.dart';
+import '../auth/auth_gate.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -36,8 +36,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
     // Navigation will be added after auth module
     if (mounted) {
       // This is a UI action (Navigation), so it needs the check.
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomePage()),
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => AuthGate()),
       );
     }
   }

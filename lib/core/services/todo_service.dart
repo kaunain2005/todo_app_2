@@ -5,7 +5,13 @@ class TodoService {
   final _db = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
 
-  String get _uid => _auth.currentUser!.uid;
+  String get _uid {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw Exception('User not logged in');
+    }
+    return user.uid;
+  }
 
   CollectionReference get _todoRef =>
       _db.collection('users').doc(_uid).collection('todos');
