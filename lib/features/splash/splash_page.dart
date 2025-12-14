@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../core/theme/app_colors.dart';
+import '../../core/services/profile_service.dart';
+import '../../main.dart';
 import '../onboarding/onboarding_page.dart';
 import '../auth/auth_gate.dart';
-
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -32,22 +35,42 @@ class _SplashPageState extends State<SplashPage>
     );
 
     _controller.forward();
+    _bootstrap();
+  }
 
-    Future.delayed(const Duration(seconds: 2), () async {
-      final prefs = await SharedPreferences.getInstance();
-      final seen = prefs.getBool('onboarding_done') ?? false;
+  Future<void> _bootstrap() async {
+    /// 1️⃣ Load cached theme instantly
+    await themeController.loadFromCache();
 
-      if (!mounted) return;
+    /// 2️⃣ Sync with Firebase if logged in
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final profileService = ProfileService();
+      final remoteTheme = await profileService.getThemeOnce();
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => seen
-              ? AuthGate() // AuthGate will go here
-              : const OnboardingPage(),
-        ),
-      );
-    });
+      if (remoteTheme != null) {
+        await themeController.setTheme(
+          remoteTheme == 'dark' ? ThemeMode.dark : ThemeMode.light,
+        );
+      }
+    }
+
+    /// 3️⃣ Onboarding logic (unchanged)
+    final prefs = await SharedPreferences.getInstance();
+    final seen = prefs.getBool('onboarding_done') ?? false;
+
+    if (!mounted) return;
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (!mounted) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => seen ? AuthGate() : const OnboardingPage(),
+      ),
+    );
   }
 
   @override
@@ -64,7 +87,11 @@ class _SplashPageState extends State<SplashPage>
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [AppColors.violet, AppColors.indigo, AppColors.cyan],
+            colors: [
+              AppColors.darkBorder,
+              AppColors.primary,
+              AppColors.secondary,
+            ],
           ),
         ),
         child: Center(

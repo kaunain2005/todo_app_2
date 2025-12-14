@@ -1,3 +1,4 @@
+// lib/features/onboarding/onboarding_page.dart
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/theme/app_colors.dart';
@@ -86,7 +87,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         Icon(
                           Icons.task_alt,
                           size: 120,
-                          color: AppColors.violet,
+                          color: AppColors.primary,
                         ),
                         const SizedBox(height: 32),
                         Text(
@@ -119,7 +120,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 height: 8,
                 decoration: BoxDecoration(
                   color: _currentIndex == index
-                      ? AppColors.indigo
+                      ? AppColors.secondary
                       : Colors.grey,
                   borderRadius: BorderRadius.circular(4),
                 ),
@@ -131,11 +132,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (_currentIndex > 0)
                   TextButton(onPressed: _prev, child: const Text('Previous')),
-                const Spacer(),
+                const SizedBox(height: 12),
                 ElevatedButton(
                   onPressed: _next,
                   child: Text(_currentIndex == 2 ? 'Get Started' : 'Next'),

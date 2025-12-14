@@ -27,12 +27,12 @@ class _MainNavigationState extends State<MainNavigation> {
           SalomonBottomBarItem(
             icon: const Icon(Icons.home_outlined),
             title: const Text("Home"),
-            selectedColor: AppColors.violet,
+            selectedColor: AppColors.primary,
           ),
           SalomonBottomBarItem(
             icon: const Icon(Icons.person_outline),
             title: const Text("Profile"),
-            selectedColor: AppColors.indigo,
+            selectedColor: AppColors.primary,
           ),
         ],
       ),

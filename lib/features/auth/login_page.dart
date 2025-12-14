@@ -1,5 +1,8 @@
 // lib/features/auth/login_page.dart
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../../core/services/auth_service.dart';
 import 'register_page.dart';
 
@@ -10,13 +13,31 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
 
   bool _loading = false;
   String? _error;
+
+  late final AnimationController _gradientController;
+
+  @override
+  void initState() {
+    super.initState();
+    _gradientController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _gradientController.dispose();
+    super.dispose();
+  }
 
   Future<void> _login() async {
     setState(() {
@@ -29,57 +50,229 @@ class _LoginPageState extends State<LoginPage> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-
-      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
     } catch (e) {
       setState(() => _error = e.toString());
     } finally {
-      setState(() => _loading = false);
+      if (mounted) setState(() => _loading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: 'Password'),
-            ),
-            const SizedBox(height: 24),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: isDark
+                ? [
+                    const Color(0xFF020617),
+                    const Color(0xFF0F172A),
+                    const Color(0xFF1E1B4B),
+                  ]
+                : [
+                    const Color(0xFFF5F3FF),
+                    const Color(0xFFE0E7FF),
+                    const Color(0xFFECFEFF),
+                  ],
+          ),
+        ),
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 420),
+                child: Hero(
+                  tag: 'auth-card',
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                      child: Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surface.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.15),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const SizedBox(height: 8),
 
-            if (_error != null)
-              Text(_error!, style: const TextStyle(color: Colors.red)),
+                            Text(
+                              'Welcome back',
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Login to continue',
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.bodyMedium,
+                            ),
 
-            const SizedBox(height: 16),
+                            const SizedBox(height: 32),
 
-            ElevatedButton(
-              onPressed: _loading ? null : _login,
-              child: _loading
-                  ? const CircularProgressIndicator()
-                  : const Text('Login'),
+                            /// Email
+                            TextField(
+                              controller: _emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: const InputDecoration(
+                                labelText: 'Email',
+                                prefixIcon: Icon(Icons.email_outlined),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+
+                            /// Password
+                            TextField(
+                              controller: _passwordController,
+                              obscureText: true,
+                              decoration: const InputDecoration(
+                                labelText: 'Password',
+                                prefixIcon: Icon(Icons.lock_outline),
+                              ),
+                            ),
+
+                            if (_error != null) ...[
+                              const SizedBox(height: 16),
+                              Text(
+                                _error!,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: theme.colorScheme.error,
+                                ),
+                              ),
+                            ],
+
+                            const SizedBox(height: 28),
+
+                            /// Animated Gradient Button
+                            AnimatedBuilder(
+                              animation: _gradientController,
+                              builder: (context, _) {
+                                return DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14),
+                                    gradient: LinearGradient(
+                                      begin: Alignment(
+                                        -1 + _gradientController.value * 2,
+                                        0,
+                                      ),
+                                      end: Alignment(
+                                        1 + _gradientController.value * 2,
+                                        0,
+                                      ),
+                                      colors: const [
+                                        Color(0xFF7C3AED),
+                                        Color(0xFF4F46E5),
+                                        Color(0xFF06B6D4),
+                                      ],
+                                    ),
+                                  ),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      shadowColor: Colors.transparent,
+                                      foregroundColor: Colors.white, // 🔥 FIX
+                                    ),
+                                    onPressed: _loading ? null : _login,
+                                    child: _loading
+                                        ? const SizedBox(
+                                            height: 22,
+                                            width: 22,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                    Colors.white,
+                                                  ),
+                                            ),
+                                          )
+                                        : const Text(
+                                            'Login',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                  ),
+                                );
+                              },
+                            ),
+
+                            const SizedBox(height: 12),
+
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    transitionDuration: const Duration(
+                                      milliseconds: 450,
+                                    ),
+                                    pageBuilder: (_, animation, __) =>
+                                        FadeTransition(
+                                          opacity: animation,
+                                          child: const RegisterPage(),
+                                        ),
+                                  ),
+                                );
+                              },
+                              child: const Text('Create account'),
+                            ),
+
+                            TextButton(
+                              onPressed: () async {
+                                if (_emailController.text.trim().isEmpty)
+                                  return;
+
+                                try {
+                                  await _authService.sendPasswordResetEmail(
+                                    _emailController.text.trim(),
+                                  );
+
+                                  if (!mounted) return;
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Password reset email sent',
+                                      ),
+                                    ),
+                                  );
+                                } on FirebaseAuthException catch (e) {
+                                  if (!mounted) return;
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        e.message ?? 'Authentication error',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: const Text('Forgot password?'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
-
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const RegisterPage()),
-                );
-              },
-              child: const Text('Create account'),
-            ),
-          ],
+          ),
         ),
       ),
     );
