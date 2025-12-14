@@ -54,19 +54,19 @@ A modern, production-ready **Todo application built with Flutter and Firebase**,
 
 ## 📂 Project Structure
 
-lib/
-├── core/
-│ ├── services/ # Auth, profile, todo services
-│ └── theme/ # App colors, themes, controller
-│
-├── features/
-│ ├── auth/ # Login, register, auth gate
-│ ├── onboarding/ # Onboarding screens
-│ ├── splash/ # Splash screen & bootstrap
-│ ├── home/ # Todo home page
-│ └── profile/ # Profile & settings
-│
-├── main.dart
+lib/<br>
+├── core/<br>
+│ ├── services/ # Auth, profile, todo services<br>
+│ └── theme/ # App colors, themes, controller<br>
+│<br>
+├── features/<br>
+│ ├── auth/ # Login, register, auth gate<br>
+│ ├── onboarding/ # Onboarding screens<br>
+│ ├── splash/ # Splash screen & bootstrap<br>
+│ ├── home/ # Todo home page<br>
+│ └── profile/ # Profile & settings<br>
+│<br>
+├── main.dart<br>
 
 ## 🚀 Getting Started
 
@@ -93,13 +93,13 @@ Firebase Authentication (Email/Password)
 Cloud Firestore
 
 3️⃣ Install Dependencies
->>> flutter pub get
+>>> flutter pub get<br>
 4️⃣ Run the App (Debug)
->>> flutter run
+>>> flutter run<br>
 📦 Build APK (Release)
 To generate a shareable APK:
->>> flutter clean
->>> flutter build apk --release
+>>> flutter clean<br>
+>>> flutter build apk --release<br>
 APK output:
 build/app/outputs/flutter-apk/app-release.apk
 ⚠️ Installing APKs requires enabling “Install unknown apps” on the device (Android OS requirement).
