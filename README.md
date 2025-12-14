@@ -5,12 +5,14 @@ A modern, production-ready **Todo application built with Flutter and Firebase**,
 ---
 ## IMAGES
 LOGIN/REGISTER - HOME PAGE - PROFILE PAGE
+<div style="display: flex; gap:10px;">
 <img width="402" height="539" alt="image" src="https://github.com/user-attachments/assets/59fb32ae-09a2-42c8-8d14-ace1690336ba" />
-<img width="302" height="442" alt="image" src="https://github.com/user-attachments/assets/76ba1898-a2d5-420c-9021-572dd5bde174" />
-
-<img width="500" height="645" alt="image" src="https://github.com/user-attachments/assets/6e4ae29d-88ae-4259-ab76-ace00ad065b7" />
-<img width="498" height="641" alt="image" src="https://github.com/user-attachments/assets/37e638aa-f1c0-4245-ab5d-3e92b469293d" />
-
+<img width="402" height="539" alt="image" src="https://github.com/user-attachments/assets/76ba1898-a2d5-420c-9021-572dd5bde174" />
+</div>
+<div style="display: flex; gap:10px;">
+<img width="402" height="539" alt="image" src="https://github.com/user-attachments/assets/6e4ae29d-88ae-4259-ab76-ace00ad065b7" />
+<img width="402" height="539" alt="image" src="https://github.com/user-attachments/assets/37e638aa-f1c0-4245-ab5d-3e92b469293d" />
+</div>
 
 ## ✨ Features
 
